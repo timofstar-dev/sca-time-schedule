@@ -263,7 +263,8 @@
         if (hasElem && period > 6) return "초등과정(1~6학년)은 6교시까지만 배정 가능합니다.";
 
         const teacher = teachers.find(t => t.id === teacherId);
-        if (teacher?.unavailable.includes(`${day}-${period}`)) return `${teacher.name} 선생님은 해당 시간에 수업이 불가능하게 설정되어 있습니다.`;
+        if (!teacher) return "해당 교사를 찾을 수 없습니다.";
+        if (teacher.unavailable.includes(`${day}-${period}`)) return `${teacher.name} 선생님은 해당 시간에 수업이 불가능하게 설정되어 있습니다.`;
         
         const classConflict = currentLessons.find(l => l.id !== currentLessonId && l.day === day && l.period === period && l.classIds.some(id => targetClassIds.includes(id)));
         if (classConflict) return `학생들은 이미 이 교시에 수업이 있습니다.`;
@@ -1074,7 +1075,7 @@
                                 <div key={idx} className={`flex flex-col items-center justify-center p-1 ${tColor.bg} print:bg-transparent rounded border ${tColor.border} print:border-none`}>
                                   <span className={`font-bold text-[11px] md:text-sm ${tColor.text} print:text-black text-center leading-tight`}>
                                     {lesson.note ? <span className="opacity-75 mr-0.5 whitespace-nowrap">[{lesson.note}]</span> : <span className="opacity-75 mr-0.5 whitespace-nowrap">[{formatClassNames(lesson.classIds)}]</span>}
-                                    <span className="break-keep">{isClassView ? getEntityName(subjects, lesson.subjectId) : getEntityName(classes, lesson.classId)}</span>
+                                    <span className="break-keep">{getEntityName(subjects, lesson.subjectId)}</span>
                                   </span>
                                   <span className={`text-[10px] ${tColor.label} mt-0.5 print:text-black text-center break-keep`}>{isClassView ? `${getEntityName(teachers, lesson.teacherId)} / ${getEntityName(rooms, lesson.roomId)}` : `${formatClassNames(lesson.classIds)} / ${getEntityName(rooms, lesson.roomId)}`}</span>
                                 </div>
